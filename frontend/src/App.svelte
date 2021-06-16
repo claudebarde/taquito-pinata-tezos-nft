@@ -71,6 +71,9 @@
         /*headers: {
           "Content-Type": "multipart/form-data"
         },*/
+        headers: {
+          "Access-Control-Allow-Origin": "*"
+        },
         body: data
       });
       if (response) {
