@@ -1,5 +1,5 @@
 {
-  "name": "svelte-tezos-template",
+  "name": "nft-taquito-pinata-tutorial",
   "version": "1.0.0",
   "devDependencies": {
     "@tsconfig/svelte": "^1.0.10",
