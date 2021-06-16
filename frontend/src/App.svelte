@@ -12,9 +12,12 @@
     preferredNetwork: NetworkType.FLORENCENET
   };
   let userAddress: string;
-  let files,
-    title = "uranus",
+  let files, title, description;
+
+  if (process.env.NODE_ENV === "dev") {
+    title = "uranus";
     description = "this is Uranus";
+  }
 
   const rpcUrl = "https://api.tez.ie/rpc/florencenet";
   const serverUrl =
