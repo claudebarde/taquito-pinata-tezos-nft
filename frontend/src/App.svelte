@@ -24,7 +24,7 @@
     process.env.NODE_ENV !== "production"
       ? "http://localhost:8080"
       : "https://taquito-pinata-tezos-nft.herokuapp.com";
-  const contractAddress = "KT18oax6CCuxPyeABm1bF4UaHKPJpc9Jg3DV";
+  const contractAddress = "KT1APQC6Fuwx5MdEj2CC6ayvsS14qWtp4VVk";
   let nftStorage = undefined;
   let userNfts: { tokenId: number; ipfsHash: string }[] = [];
   let pinningMetadata = false;
