@@ -290,7 +290,7 @@
         </div>
       {/if}
     {:else}
-      <div class="roman">Create a NFT with your pictures</div>
+      <div class="roman">Create an NFT with your pictures</div>
       <button class="roman" on:click={connect}>Connect your wallet</button>
     {/if}
   </div>
