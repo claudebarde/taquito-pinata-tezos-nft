@@ -1,6 +1,5 @@
 import express from "express";
 import pinataSDK from "@pinata/sdk";
-import PinataKeys from "./PinataKeys";
 import fs from "fs";
 const cors = require("cors");
 const multer = require("multer");
@@ -12,6 +11,7 @@ let pinata: any;
 if (process.env.NODE_ENV === "production") {
   pinata = pinataSDK(process.env.PINATA_API_KEY, process.env.PINATA_SECRET_KEY);
 } else {
+  const PinataKeys = require("./PinataKeys");
   pinata = pinataSDK(PinataKeys.apiKey, PinataKeys.apiSecret);
 }
 
