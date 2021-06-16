@@ -1,0 +1,18 @@
+@font-face {
+  font-family: "Roman-SD";
+  src: url("../../public/Roman-SD.woff") format("woff"),
+    /* Chrome 6+, Firefox 3.6+, IE 9+, Safari 5.1+ */
+      url("../../public/Roman-SD.ttf") format("truetype"); /* Chrome 4+, Firefox 3.5, Opera 10+, Safari 3—5 */
+}
+
+body {
+  height: 100vh;
+  font-size: 1rem;
+
+  main {
+    display: grid;
+    place-items: center;
+    height: 100vh;
+    text-align: center;
+  }
+}
