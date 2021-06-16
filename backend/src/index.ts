@@ -7,11 +7,19 @@ const multer = require("multer");
 
 const app = express();
 const upload = multer({ dest: "uploads/" });
-const pinata = pinataSDK(PinataKeys.apiKey, PinataKeys.apiSecret);
 const port = process.env.NODE_ENV === "production" ? process.env.PORT : 8080; // default port to listen
+let pinata: any;
+if (process.env.NODE_ENV === "production") {
+  pinata = pinataSDK(process.env.PINATA_API_KEY, process.env.PINATA_SECRET_KEY);
+} else {
+  pinata = pinataSDK(PinataKeys.apiKey, PinataKeys.apiSecret);
+}
 
 const corsOptions = {
-  origin: ["http://localhost:8082"],
+  origin: [
+    "http://localhost:8082",
+    "https://taquito-pinata-tezos-nft.netlify.app/"
+  ],
   optionsSuccessStatus: 200 // some legacy browsers (IE11, various SmartTVs) choke on 204
 };
 app.use(cors(corsOptions));
@@ -36,7 +44,7 @@ app.post("/mint", upload.single("image"), async (req, res) => {
     // tests Pinata authentication
     await pinata
       .testAuthentication()
-      .catch(err => res.status(500).json(JSON.stringify(err)));
+      .catch((err: any) => res.status(500).json(JSON.stringify(err)));
     // creates readable stream
     const readableStreamForFile = fs.createReadStream(`./uploads/${fileName}`);
     const options: any = {
