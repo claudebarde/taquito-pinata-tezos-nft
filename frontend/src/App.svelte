@@ -1,7 +1,7 @@
 <script lang="ts">
   import { onMount } from "svelte";
-  import { TezosToolkit } from "@taquito/taquito";
-  import { char2Bytes } from "@taquito/utils";
+  import { TezosToolkit, MichelCodecPacker } from "@taquito/taquito";
+  import { char2Bytes, bytes2Char } from "@taquito/utils";
   import { BeaconWallet } from "@taquito/beacon-wallet";
   import { NetworkType } from "@airgap/beacon-sdk";
 
@@ -25,11 +25,33 @@
       ? "http://localhost:8080"
       : "https://taquito-pinata-tezos-nft.herokuapp.com";
   const contractAddress = "KT18oax6CCuxPyeABm1bF4UaHKPJpc9Jg3DV";
+  let nftStorage = undefined;
+  let userNfts: { tokenId: number; ipfsHash: string }[] = [];
   let pinningMetadata = false;
   let mintingToken = false;
   let newNft:
     | undefined
     | { imageHash: string; metadataHash: string; opHash: string };
+
+  const getUserNfts = async (address: string) => {
+    // finds user's NFTs
+    const contract = await Tezos.wallet.at(contractAddress);
+    nftStorage = await contract.storage();
+    const getTokenIds = await nftStorage.reverse_ledger.get(address);
+    if (getTokenIds) {
+      userNfts = await Promise.all([
+        ...getTokenIds.map(async id => {
+          const tokenId = id.toNumber();
+          const metadata = await nftStorage.token_metadata.get(tokenId);
+          const tokenInfo = metadata.token_info.get("");
+          return {
+            tokenId,
+            ipfsHash: bytes2Char(tokenInfo).split("ipfs://")[1]
+          };
+        })
+      ]);
+    }
+  };
 
   const connect = async () => {
     if (!wallet) {
@@ -44,8 +66,8 @@
         }
       });
       userAddress = await wallet.getPKH();
-      console.log(userAddress);
       Tezos.setWalletProvider(wallet);
+      await getUserNfts(userAddress);
     } catch (err) {
       console.error(err);
     }
@@ -99,6 +121,9 @@
           files = undefined;
           title = "";
           description = "";
+
+          // refreshes storage
+          await getUserNfts(userAddress);
         } else {
           throw "No IPFS hash";
         }
@@ -115,10 +140,12 @@
 
   onMount(async () => {
     Tezos = new TezosToolkit(rpcUrl);
+    Tezos.setPackerProvider(new MichelCodecPacker());
     wallet = new BeaconWallet(walletOptions);
     if (await wallet.client.getActiveAccount()) {
       userAddress = await wallet.getPKH();
       Tezos.setWalletProvider(wallet);
+      await getUserNfts(userAddress);
     }
   });
 </script>
@@ -162,6 +189,12 @@
     textarea {
       padding: 10px;
     }
+
+    .user-nfts {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
   }
 </style>
 
@@ -170,6 +203,24 @@
     <h1>Illic Et Numquam</h1>
     {#if userAddress}
       <div>
+        <div class="user-nfts">
+          Your NFTs:
+          {#if nftStorage}
+            [ {#each userNfts.reverse() as nft, index}
+              <a
+                href={`https://cloudflare-ipfs.com/ipfs/${nft.ipfsHash}`}
+                target="_blank"
+                rel="noopener noreferrer nofollow"
+              >
+                {nft.tokenId}
+              </a>
+              {#if index < userNfts.length - 1}
+                <span>,&nbsp;</span>
+              {/if}
+            {/each} ]
+          {/if}
+        </div>
+        <br />
         <button class="roman" on:click={disconnect}>Disconnect</button>
       </div>
       {#if newNft}
@@ -229,15 +280,13 @@
           </label>
         </div>
         <div>
-          <button class="roman" on:click={upload}>
-            {#if pinningMetadata}
-              Saving your image...
-            {:else if mintingToken}
-              Minting your NFT...
-            {:else}
-              Upload
-            {/if}
-          </button>
+          {#if pinningMetadata}
+            <button class="roman"> Saving your image... </button>
+          {:else if mintingToken}
+            <button class="roman"> Minting your NFT... </button>
+          {:else}
+            <button class="roman" on:click={upload}> Upload </button>
+          {/if}
         </div>
       {/if}
     {:else}
