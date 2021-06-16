@@ -72,8 +72,7 @@
           "Content-Type": "multipart/form-data"
         },*/
         headers: {
-          "Access-Control-Allow-Origin": "*",
-          "Content-Type": "multipart/form-data"
+          "Access-Control-Allow-Origin": "*"
         },
         body: data
       });

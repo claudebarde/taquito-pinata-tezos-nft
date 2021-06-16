@@ -14,6 +14,9 @@
   },
   "author": "Claude Barde",
   "license": "ISC",
+  "engines": {
+    "node": "14.15.5"
+  },
   "dependencies": {
     "@pinata/sdk": "^1.1.20",
     "@taquito/signer": "^9.0.1",
