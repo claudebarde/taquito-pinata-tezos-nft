@@ -20,7 +20,7 @@
   const serverUrl =
     process.env.NODE_ENV !== "production"
       ? "http://localhost:8080"
-      : "https://taquito-pinata-tezos-nft.herokuapp.com/";
+      : "https://taquito-pinata-tezos-nft.herokuapp.com";
   const contractAddress = "KT18oax6CCuxPyeABm1bF4UaHKPJpc9Jg3DV";
   let pinningMetadata = false;
   let mintingToken = false;
