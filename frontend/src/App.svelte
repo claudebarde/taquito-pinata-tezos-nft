@@ -23,7 +23,7 @@
   const serverUrl =
     process.env.NODE_ENV !== "production"
       ? "http://localhost:8080"
-      : "https://taquito-pinata-tezos-nft.herokuapp.com";
+      : "https://my-cool-backend-app.com";
   const contractAddress = "KT1APQC6Fuwx5MdEj2CC6ayvsS14qWtp4VVk";
   let nftStorage = undefined;
   let userNfts: { tokenId: number; ipfsHash: string }[] = [];
@@ -43,10 +43,12 @@
         ...getTokenIds.map(async id => {
           const tokenId = id.toNumber();
           const metadata = await nftStorage.token_metadata.get(tokenId);
-          const tokenInfo = metadata.token_info.get("");
+          const tokenInfoBytes = metadata.token_info.get("");
+          const tokenInfo = bytes2Char(tokenInfoBytes);
           return {
             tokenId,
-            ipfsHash: bytes2Char(tokenInfo).split("ipfs://")[1]
+            ipfsHash:
+              tokenInfo.slice(0, 7) === "ipfs://" ? tokenInfo.slice(7) : null
           };
         })
       ]);
@@ -83,16 +85,13 @@
     try {
       pinningMetadata = true;
       const data = new FormData();
-      data.append("image", files[0], "image.png");
+      data.append("image", files[0]);
       data.append("title", title);
       data.append("description", description);
       data.append("creator", userAddress);
 
       const response = await fetch(`${serverUrl}/mint`, {
         method: "POST",
-        /*headers: {
-          "Content-Type": "multipart/form-data"
-        },*/
         headers: {
           "Access-Control-Allow-Origin": "*"
         },
@@ -100,8 +99,11 @@
       });
       if (response) {
         const data = await response.json();
-        console.log(data);
-        if (data.status && data.msg.metadataHash && data.msg.imageHash) {
+        if (
+          data.status === 200 &&
+          data.msg.metadataHash &&
+          data.msg.imageHash
+        ) {
           pinningMetadata = false;
           mintingToken = true;
           // saves NFT on-chain

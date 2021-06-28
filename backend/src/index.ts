@@ -16,10 +16,7 @@ if (process.env.NODE_ENV === "production") {
 }
 
 const corsOptions = {
-  origin: [
-    "http://localhost:8082",
-    "https://taquito-pinata-tezos-nft.netlify.app"
-  ],
+  origin: ["http://localhost:8082", "https://my-cool-nft-app.com"],
   optionsSuccessStatus: 200 // some legacy browsers (IE11, various SmartTVs) choke on 204
 };
 app.use(cors(corsOptions));
