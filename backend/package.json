@@ -19,9 +19,6 @@
   },
   "dependencies": {
     "@pinata/sdk": "^1.1.20",
-    "@taquito/signer": "^9.0.1",
-    "@taquito/taquito": "^9.0.1",
-    "@taquito/utils": "^9.0.1",
     "axios": "^0.21.1",
     "cors": "^2.8.5",
     "express": "^4.17.1",
