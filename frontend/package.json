@@ -37,9 +37,9 @@
     "validate": "svelte-check"
   },
   "dependencies": {
-    "@taquito/beacon-wallet": "^9.1.0",
-    "@taquito/taquito": "^9.1.0",
-    "@taquito/utils": "^9.1.0",
+    "@taquito/beacon-wallet": "^11.1.0",
+    "@taquito/taquito": "^11.1.0",
+    "@taquito/utils": "^11.1.0",
     "file-loader": "^6.2.0"
   }
 }
