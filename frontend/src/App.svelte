@@ -100,7 +100,7 @@
       if (response) {
         const data = await response.json();
         if (
-          data.status === 200 &&
+          data.status === true &&
           data.msg.metadataHash &&
           data.msg.imageHash
         ) {

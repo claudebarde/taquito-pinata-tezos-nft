@@ -11,7 +11,7 @@ let pinata: any;
 if (process.env.NODE_ENV === "production") {
   pinata = pinataSDK(process.env.PINATA_API_KEY, process.env.PINATA_SECRET_KEY);
 } else {
-  const PinataKeys = require("./PinataKeys");
+  const PinataKeys = require("./PinataKeys").default;
   pinata = pinataSDK(PinataKeys.apiKey, PinataKeys.apiSecret);
 }
 
