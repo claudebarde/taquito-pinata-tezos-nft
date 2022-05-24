@@ -19,7 +19,7 @@
     description = "this is Uranus";
   }
 
-  const rpcUrl = "https://hangzhounet.api.tez.ie";
+  const rpcUrl = "https://api.hangzhou2net.tzkt.io/";
   const serverUrl =
     process.env.NODE_ENV !== "production"
       ? "http://localhost:8080"
@@ -90,33 +90,21 @@
       data.append("description", description);
       data.append("creator", userAddress);
 
-      const response = await fetch(`${serverUrl}/mint`, {
-        method: "POST",
-        headers: {
-          "Access-Control-Allow-Origin": "*"
-        },
-        body: data
-      });
-      if (response) {
-        const data = await response.json();
-        if (
-          data.status === true &&
-          data.msg.metadataHash &&
-          data.msg.imageHash
-        ) {
+  
+    
           pinningMetadata = false;
           mintingToken = true;
           // saves NFT on-chain
           const contract = await Tezos.wallet.at(contractAddress);
           const op = await contract.methods
-            .mint(char2Bytes("ipfs://" + data.msg.metadataHash), userAddress)
+            .mint(char2Bytes("ipfs://QmY1nfe4KgV95y5XHTPU9mBxEga2Z541wmfg1b5dXdPCxH"), userAddress)
             .send();
           console.log("Op hash:", op.opHash);
           await op.confirmation();
 
           newNft = {
-            imageHash: data.msg.imageHash,
-            metadataHash: data.msg.metadataHash,
+            imageHash: 'QmY1nfe4KgV95y5XHTPU9mBxEga2Z541wmfg1b5dXdPCxH',
+            metadataHash: 'QmY1nfe4KgV95y5XHTPU9mBxEga2Z541wmfg1b5dXdPCxH',
             opHash: op.opHash
           };
 
@@ -126,12 +114,7 @@
 
           // refreshes storage
           await getUserNfts(userAddress);
-        } else {
-          throw "No IPFS hash";
-        }
-      } else {
-        throw "No response";
-      }
+
     } catch (error) {
       console.log(error);
     } finally {
