@@ -239,7 +239,7 @@ let update_operators (update, storage : update_operator * operator_storage)
 
 (**
 Validate if operator update is performed by the token owner.
-@param updater an address that initiated the operation; usually `Tezos.sender`.
+@param updater an address that initiated the operation; usually `Tezos.get_sender ()`.
 *)
 let validate_update_operators_by_owner (update, updater : update_operator * address)
     : unit =
@@ -255,7 +255,7 @@ let validate_update_operators_by_owner (update, updater : update_operator * addr
  *)
 let fa2_update_operators (updates, storage
     : (update_operator list) * operator_storage) : operator_storage =
-  let updater = Tezos.sender in
+  let updater = Tezos.get_sender () in
   let process_update = (fun (ops, update : operator_storage * update_operator) ->
     let _u = validate_update_operators_by_owner (update, updater) in
     update_operators (update, ops)
@@ -312,7 +312,7 @@ let validate_operator (tx_policy, txs, ops_storage
   let validator = make_operator_validator tx_policy in
   List.iter (fun (tx : transfer) -> 
     List.iter (fun (dst: transfer_destination) ->
-      validator (tx.from_, Tezos.sender, dst.token_id ,ops_storage)
+      validator (tx.from_, Tezos.get_sender (), dst.token_id ,ops_storage)
     ) tx.txs
   ) txs
 
@@ -386,7 +386,7 @@ let transfer (txs, validate_op, ops_storage, ledger, reverse_ledger
             then (failwith fa2_insufficient_balance : ledger * reverse_ledger)
             else 
               begin
-                let _u = validate_op (o, Tezos.sender, dst.token_id, ops_storage) in
+                let _u = validate_op (o, Tezos.get_sender (), dst.token_id, ops_storage) in
                 let new_ll = Big_map.update dst.token_id (Some dst.to_) ll in
                 (* removes token id from sender *)
                 let new_rv_ll = 
@@ -469,18 +469,20 @@ let burn (p, s: token_id * nft_token_storage): nft_token_storage =
     match Big_map.find_opt p s.ledger with
     | None -> (failwith "UNKNOWN_TOKEN": ledger)
     | Some owner ->
-      if owner <> Tezos.sender
+      if owner <> Tezos.get_sender ()
       then (failwith "NOT_TOKEN_OWNER": ledger)
       else
         Big_map.remove p s.ledger
   in
   (* removes token from the reverse ledger *)
   let new_reverse_ledger: reverse_ledger =
-    match Big_map.find_opt Tezos.sender s.reverse_ledger with
+    let sender = Tezos.get_sender () in
+
+    match Big_map.find_opt sender s.reverse_ledger with
     | None -> (failwith "NOT_A_USER": reverse_ledger)
     | Some tk_id_l -> 
       Big_map.update 
-        Tezos.sender 
+        sender
         (Some (List.fold (
           fun (new_list, token_id: token_id list * token_id) ->
             if token_id = p
@@ -490,7 +492,7 @@ let burn (p, s: token_id * nft_token_storage): nft_token_storage =
         s.reverse_ledger
   in { s with ledger = new_ledger; reverse_ledger = new_reverse_ledger }
 
-let fa2_main (param, storage : fa2_entry_points * nft_token_storage)
+let main (param, storage : fa2_entry_points * nft_token_storage)
     : (operation  list) * nft_token_storage =
   match param with
   | Transfer txs ->
