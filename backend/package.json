@@ -18,18 +18,18 @@
     "node": "14.15.5"
   },
   "dependencies": {
-    "@pinata/sdk": "^1.1.20",
-    "axios": "^0.21.1",
+    "@pinata/sdk": "^2.1.0",
+    "axios": "^1.3.2",
     "cors": "^2.8.5",
-    "express": "^4.17.1",
+    "express": "^4.18.2",
     "multer": "^1.4.2",
-    "uuid": "^8.3.2"
+    "uuid": "^9.0.0"
   },
   "devDependencies": {
-    "@types/express": "^4.17.12",
-    "@types/node": "^15.6.1",
-    "nodemon": "^2.0.7",
-    "ts-node": "^10.0.0",
-    "typescript": "^4.3.2"
+    "@types/express": "^4.17.17",
+    "@types/node": "^18.11.18",
+    "nodemon": "^2.0.20",
+    "ts-node": "^10.9.1",
+    "typescript": "^4.9.5"
   }
 }

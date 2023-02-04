@@ -9,7 +9,7 @@
   let wallet: BeaconWallet;
   const walletOptions = {
     name: "Illic et Numquam",
-    preferredNetwork: NetworkType.HANGZHOUNET
+    preferredNetwork: NetworkType.GHOSTNET
   };
   let userAddress: string;
   let files, title, description;
@@ -19,7 +19,7 @@
     description = "this is Uranus";
   }
 
-  const rpcUrl = "https://hangzhounet.api.tez.ie";
+  const rpcUrl = "https://ghostnet.api.tez.ie";
   const serverUrl =
     process.env.NODE_ENV !== "production"
       ? "http://localhost:8080"
@@ -63,7 +63,7 @@
     try {
       await wallet.requestPermissions({
         network: {
-          type: NetworkType.HANGZHOUNET,
+          type: NetworkType.GHOSTNET,
           rpcUrl
         }
       });
