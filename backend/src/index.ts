@@ -9,10 +9,13 @@ const upload = multer({ dest: "uploads/" });
 const port = process.env.NODE_ENV === "production" ? process.env.PORT : 8080; // default port to listen
 let pinata: any;
 if (process.env.NODE_ENV === "production") {
-  pinata = pinataSDK(process.env.PINATA_API_KEY, process.env.PINATA_SECRET_KEY);
+  pinata = new pinataSDK(
+    process.env.PINATA_API_KEY,
+    process.env.PINATA_SECRET_KEY
+  );
 } else {
   const PinataKeys = require("./PinataKeys").default;
-  pinata = pinataSDK(PinataKeys.apiKey, PinataKeys.apiSecret);
+  pinata = new pinataSDK(PinataKeys.apiKey, PinataKeys.apiSecret);
 }
 
 const corsOptions = {
